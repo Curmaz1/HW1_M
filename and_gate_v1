@@ -1,0 +1,11 @@
+module logic_gate (
+    input wire a,    // Entrada 1
+    input wire b,    // Entrada 2
+    input wire c,    // Entrada 3
+    output wire y    // Salida
+);
+
+// Combinación de puertas lógicas
+assign y = (a & b) | (b & c) | (c & a); // AND entre pares seguido de OR
+
+endmodule
