@@ -1,0 +1,63 @@
+`timescale 1ns / 1ps
+
+module tb_logic_gate;
+
+// Declaración de señales
+reg a;    // Entrada 1
+reg b;    // Entrada 2
+reg c;    // Entrada 3
+wire y;   // Salida
+
+// Reloj y contadores
+reg clk;                // Reloj
+integer count_stimulus; // Contador de estímulos aleatorios
+integer count_clock;    // Contador total de subidas del reloj
+
+// Instanciación del módulo logic_gate
+logic_gate uut (
+    .a(a),
+    .b(b),
+    .c(c),
+    .y(y)
+);
+
+// Generación del reloj
+always begin
+    clk = 0;
+    #2 clk = 1;       // Ciclo alto de 2 ns
+    #2;               // Ciclo bajo de 2 ns
+end
+
+// Inicialización de la simulación
+initial begin
+    // Inicializar entradas
+    a = 0; b = 0; c = 0;
+    count_stimulus = 0;
+    count_clock = 0;
+// Inicializar la salida de forma de onda
+    $dumpfile("waveform.vcd"); // Nombre del archivo VCD
+    $dumpvars(0, tb_logic_gate); // Generar salida de todas las variables del testbench
+    // Mostrar encabezado
+    $display("Time\tA\tB\tC\tY");
+    $monitor("%g\t%b\t%b\t%b\t%b", $time, a, b, c, y);
+
+    // Producir estímulos aleatorios hasta la quinta subida del reloj
+    forever begin
+        @(posedge clk); // Esperar a la subida del reloj
+        count_clock = count_clock + 1; // Incrementar el contador de subidas del reloj
+        
+        if (count_stimulus < 5) begin
+            // Asignar valores aleatorios de 1 bit a a, b y c
+            a = $urandom % 2;
+            b = $urandom % 2; 
+            c = $urandom % 2; 
+            count_stimulus = count_stimulus + 1; // Incrementar el contador de estímulos
+        end
+        
+        if (count_clock >= 10) begin
+            $finish; 
+        end
+    end
+end
+
+endmodule
