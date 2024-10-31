@@ -2,7 +2,7 @@
 
 module tb_logic_gate;
 
-// Declaración de señales
+
 reg a;    // Entrada 1
 reg b;    // Entrada 2
 reg c;    // Entrada 3
@@ -41,13 +41,12 @@ initial begin
     $display("Time\tA\tB\tC\tY");
     $monitor("%g\t%b\t%b\t%b\t%b", $time, a, b, c, y);
 
-    // Producir estímulos aleatorios hasta la quinta subida del reloj
     forever begin
         @(posedge clk); // Esperar a la subida del reloj
         count_clock = count_clock + 1; // Incrementar el contador de subidas del reloj
         
         if (count_stimulus < 5) begin
-            // Asignar valores aleatorios de 1 bit a a, b y c
+            // Asignar valores aleatorios
             a = $urandom % 2;
             b = $urandom % 2; 
             c = $urandom % 2; 
