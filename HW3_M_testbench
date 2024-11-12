@@ -1,0 +1,93 @@
+`timescale 1ns / 1ps
+//////////////////////////////////////////////////////////////////////////////////
+// Company: 
+// Engineer: 
+// 
+// Create Date: 11/12/2024 01:42:00 AM
+// Design Name: 
+// Module Name: tb
+// Project Name: 
+// Target Devices: 
+// Tool Versions: 
+// Description: Testbench para el sumador
+// Dependencies: 
+// 
+// Revision:
+// Revision 0.01 - File Created
+// Additional Comments:
+// 
+//////////////////////////////////////////////////////////////////////////////////
+
+module tb;
+  parameter ADDER_WIDTH = 8;
+
+  // Instancia de la interfaz
+  adder_intf #(ADDER_WIDTH) adder_intf_i(); 
+
+  // Instancia del DUT
+  sumador_1 #(ADDER_WIDTH) DUT (
+      .result(adder_intf_i.result),
+      .a(adder_intf_i.a),
+      .b(adder_intf_i.b)
+  );
+    `define TEST1
+
+
+  `ifdef TEST1
+    initial begin
+        // Prueba 1: Generar suma de cero, luego 1000 sumas aleatorias
+        adder_intf_i.add_a_b_zero();
+        #1;
+        repeat(1000) begin
+            adder_intf_i.add_a_b_random();
+            #1;
+        end
+        adder_intf_i.add_a_b_zero();
+        #1;
+        $finish;
+    end
+  `endif
+   `ifdef TEST2
+    // Prueba 2 - 
+    //////////////////////////////////////////////
+    // 1. Generar una suma de 0                 //
+    // 2. Generar 1000 sumas con valores random //
+    // 3. Generar una suma de 0                 //
+    //////////////////////////////////////////////
+  initial begin
+      adder_intf_i.a = 8'hFF; // Máximo valor de 8 bits: 255
+      adder_intf_i.b = 8'h01; // Añade 1 para provocar el desbordamiento
+      #1;
+      $finish;
+  end
+`endif
+//`ifdef TEST1
+`ifdef TEST3
+//`ifdef TEST3
+  initial begin
+      repeat(1000) begin
+          adder_intf_i.add_a_b_random();  // Genera valores aleatorios para 'a' y 'b'
+          #1;                             // Espera un ciclo de tiempo para cada suma
+      end
+      $finish;                            // Finaliza la simulación después de 1000 sumas
+  end
+`endif
+  // Aquí puedes agregar más pruebas si las necesitas
+endmodule
+
+// Interfaz del sumador
+interface adder_intf #(parameter WIDTH = 8);
+    logic [WIDTH-1:0] a;
+    logic [WIDTH-1:0] b;
+    logic [WIDTH-1:0] result;
+
+    // Funciones de generación de estímulos
+    function automatic void add_a_zero_b_random();
+        a = '0;
+        b = $random;  // Usar $random para aleatorizar 'b'
+    endfunction
+
+    function automatic void add_b_zero_a_random();
+        b = '0;
+        a = $random;  // Usar $random para aleatorizar 'a'
+    endfunction
