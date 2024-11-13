@@ -72,7 +72,6 @@ module tb;
       $finish;                            // Finaliza la simulación después de 1000 sumas
   end
 `endif
-  // Aquí puedes agregar más pruebas si las necesitas
 endmodule
 
 // Interfaz del sumador
